@@ -1,0 +1,21 @@
+sequenceDiagram
+ actor P as Patient
+ participant UI as Web frontend
+ participant AI as AISchedulingAdapter
+ participant L as Language model API
+ participant V as AvailabilityService
+ P->>UI: Request AI scheduling help
+ UI->>AI: suggest(patientId, text)
+ AI->>L: Interpret scheduling preferences
+ alt No response within 8 seconds
+  AI-->>UI: timeout, use manual search
+ else Service error or malformed response
+  L-->>AI: error or invalid payload
+  AI-->>UI: unavailable, use manual search
+ end
+ UI-->>P: Show provider and date controls
+ P->>UI: Select preferences manually
+ UI->>V: findOpen(manualIntent)
+ V-->>UI: real available slots
+ UI-->>P: Display slots, await confirmation
+ Note over AI,V: AI failure does not create or change an appointment

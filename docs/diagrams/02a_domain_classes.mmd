@@ -1,0 +1,39 @@
+classDiagram
+ direction LR
+ class User {
+ +int userId
+ +string name
+ +string email
+ -string passwordHash
+ +string role
+ }
+ class Provider {
+ +int providerId
+ +int userId
+ +string name
+ +string specialty
+ +bool active
+ }
+ class AvailabilitySlot {
+ +int slotId
+ +int providerId
+ +datetime startTime
+ +string status
+ }
+ class Appointment {
+ +int appointmentId
+ +int patientId
+ +int slotId
+ +int providerId
+ +string reason
+ +string status
+ +datetime createdAt
+ +datetime updatedAt
+ +cancel()
+ +markCompleted()
+ }
+ User "1" -- "0..1" Provider : provider account
+ User "1" -- "0..*" Appointment : patient books
+ Provider "1" -- "0..*" AvailabilitySlot : offers
+ Provider "1" -- "0..*" Appointment : receives
+ AvailabilitySlot "1" -- "0..*" Appointment : booking history

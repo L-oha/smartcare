@@ -1,0 +1,49 @@
+classDiagram
+ direction TB
+ class AuthService {
+ +registerPatient(name, email, password)
+ +login(email, password)
+ +logout(token)
+ +requireRole(token, role) User
+ }
+ class AppointmentService {
+ +book(patientId, slotId) Appointment
+ +cancel(patientId, appointmentId)
+ +history(patientId)
+ +providerSchedule(providerId)
+ +setStatus(adminId, appointmentId, status)
+ }
+ class AvailabilityService {
+ +listProviders()
+ +findOpen(intent)
+ +saveProvider(adminId, provider)
+ +saveSlot(adminId, slot)
+ }
+ class AISchedulingAdapter {
+ +float confidenceThreshold = 0.70
+ +int timeoutSeconds = 8
+ +suggest(patientId, text) SchedulingResult
+ -interpret(text) SchedulingIntent
+ }
+ class SchedulingIntent {
+ +string specialty
+ +string providerName
+ +string dateRange
+ +string timePreference
+ +float confidence
+ }
+ class AppointmentRepository {
+ +begin()
+ +lockSlot(slotId)
+ +insertConfirmed(patientId, slotId)
+ +lockAppointment(appointmentId)
+ +saveCancellation(appointmentId)
+ +releaseSlot(slotId)
+ +commit()
+ +rollback()
+ }
+ AuthService <.. AppointmentService : requires identity
+ AuthService <.. AISchedulingAdapter : requires identity
+ AppointmentService --> AppointmentRepository : atomic changes
+ AISchedulingAdapter ..> SchedulingIntent : interprets
+ AISchedulingAdapter --> AvailabilityService : finds real slots

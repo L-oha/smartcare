@@ -1,0 +1,17 @@
+flowchart TB
+ DEV["Local development: React, FastAPI, SQLite"] -->|Reviewed pull request| GH["GitHub repository and Mermaid sources"]
+ GH --> CI["GitHub Actions: lint, typecheck, backend tests"]
+ CI --> PASS{"Checks pass?"}
+ PASS -->|No| FIX["Fix change; deployment blocked"]
+ PASS -->|Yes| IMG["Build and push versioned Docker images"]
+ IMG -->|Manual approval and SSH deploy| VM["Google Compute Engine VM: vps101"]
+ subgraph Host["Cloud deployment environment"]
+ VM --> PROXY["HTTPS reverse proxy"]
+ PROXY --> FE["Frontend container"]
+ PROXY --> API["FastAPI container"]
+ API --> PG[("Private PostgreSQL + persistent volume")]
+ SEC["VM environment file: restricted permissions"] -->|Runtime secrets| API
+ end
+ API -->|HTTPS| LLM["External AI API"]
+ API --> HEALTH["Health check and smoke test"]
+ HEALTH -->|Failure| ROLL["Restore previous image tag"]

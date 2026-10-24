@@ -1,0 +1,6 @@
+flowchart TB
+ U["Patient / Provider / Clinic Admin"] -->|HTTPS| FE["Web frontend: React + TypeScript"]
+ FE -->|HTTPS JSON| API["Backend API: FastAPI"]
+ API -->|SQL| DB[("Application database: PostgreSQL")]
+ API -->|HTTPS: scheduling preferences| AI["External language model API"]
+ AI -->|Structured intent only| API

@@ -1,0 +1,24 @@
+sequenceDiagram
+ actor P as Patient
+ participant UI as Web frontend
+ participant A as AuthService
+ participant S as AppointmentService
+ participant R as AppointmentRepository
+ P->>UI: Select slot and confirm
+ UI->>A: requireRole(token, patient)
+ A-->>UI: authenticated patientId
+ UI->>S: book(patientId, slotId)
+ S->>R: begin()
+ S->>R: lockSlot(slotId)
+ R-->>S: slot and current status
+ alt Future slot open and provider active
+  S->>R: insertConfirmed(patientId, slotId)
+  Note over S,R: Unique active-slot constraint
+  S->>R: commit()
+  S-->>UI: confirmed appointment
+  UI-->>P: Show booking details
+ else Slot unavailable or constraint conflict
+  S->>R: rollback()
+  S-->>UI: booking conflict
+  UI-->>P: Choose another time
+ end

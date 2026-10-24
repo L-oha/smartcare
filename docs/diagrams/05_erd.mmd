@@ -1,0 +1,37 @@
+erDiagram
+ direction LR
+ USER ||--o| PROVIDER : provider_account
+ USER ||--o{ APPOINTMENT : patient_books
+ PROVIDER ||--o{ AVAILABILITY_SLOT : offers
+ PROVIDER ||--o{ APPOINTMENT : receives
+ AVAILABILITY_SLOT ||--o{ APPOINTMENT : booking_history
+ USER {
+ int user_id PK
+ string name
+ string email UK
+ string password_hash
+ string role
+ }
+ PROVIDER {
+ int provider_id PK
+ int user_id FK,UK
+ string name
+ string specialty
+ boolean active
+ }
+ AVAILABILITY_SLOT {
+ int slot_id PK
+ int provider_id FK
+ datetime start_time
+ string status
+ }
+ APPOINTMENT {
+ int appointment_id PK
+ int patient_id FK
+ int provider_id FK
+ int slot_id FK
+ string reason
+ string status
+ datetime created_at
+ datetime updated_at
+ }

@@ -1,0 +1,21 @@
+sequenceDiagram
+ actor P as Patient
+ participant UI as Web frontend
+ participant AI as AISchedulingAdapter
+ participant L as Language model API
+ participant V as AvailabilityService
+ P->>UI: Enter scheduling preferences
+ UI->>AI: suggest(patientId, text)
+ AI->>AI: interpret(text)
+ AI->>L: Scheduling-only prompt with structured output
+ L-->>AI: intent and confidence
+ alt Valid intent and confidence at least 0.70
+  AI->>V: findOpen(intent)
+  V-->>AI: current provider and slot options
+  AI-->>UI: available options or no matches
+  UI-->>P: Show options for patient selection
+ else Low confidence or incomplete preferences
+  AI-->>UI: clarification required
+  UI-->>P: Ask for provider or date preference
+ end
+ Note over P,UI: Booking requires a separate confirmed book() request

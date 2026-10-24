@@ -1,0 +1,10 @@
+stateDiagram-v2
+ [*] --> Confirmed : patient confirms / atomic booking succeeds
+ Confirmed --> Cancelled : cancel() [owner and future appointment]
+ Confirmed --> Completed : markCompleted() [authorized admin and visit finished]
+ Cancelled --> [*]
+ Completed --> [*]
+ note right of Confirmed
+  Failed booking creates no appointment.
+  An unconfirmed UI choice is not persisted.
+ end note

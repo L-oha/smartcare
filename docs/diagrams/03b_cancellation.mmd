@@ -1,0 +1,24 @@
+sequenceDiagram
+ actor P as Patient
+ participant UI as Web frontend
+ participant A as AuthService
+ participant S as AppointmentService
+ participant R as AppointmentRepository
+ P->>UI: Cancel appointment
+ UI->>A: requireRole(token, patient)
+ A-->>UI: authenticated patientId
+ UI->>S: cancel(patientId, appointmentId)
+ S->>R: begin()
+ S->>R: lockAppointment(appointmentId)
+ R-->>S: owner, status, slot, start time
+ alt Own confirmed future appointment
+  S->>R: saveCancellation(appointmentId)
+  S->>R: releaseSlot(slotId)
+  S->>R: commit()
+  S-->>UI: cancelled
+  UI-->>P: Show cancellation and retain history
+ else Unauthorized or ineligible
+  S->>R: rollback()
+  S-->>UI: access denied or invalid state
+  UI-->>P: Explain why cancellation failed
+ end

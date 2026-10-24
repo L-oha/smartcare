@@ -1,0 +1,15 @@
+flowchart TB
+ IN["Authenticated request"] --> VAL["Validate and minimize data"]
+ VAL --> CLIN{"Clinical request?"}
+ CLIN -->|Yes| REF["Scheduling only; manual search"]
+ CLIN -->|No| CALL["Scheduling prompt + schema; call AI with 8s timeout"]
+ CALL --> OK{"Valid response?"}
+ OK -->|Failure or timeout| FALL["AI unavailable; manual search"]
+ OK -->|Yes| CONF{"Usable intent and confidence >= 0.70?"}
+ CONF -->|No| ASK["Ask for clarification"]
+ CONF -->|Yes| FIND["Search real future open slots"]
+ FIND --> MATCH{"Matches found?"}
+ MATCH -->|No| NONE["Change preferences or search manually"]
+ MATCH -->|Yes| SHOW["Show options; patient selects and confirms"]
+ SHOW --> BOOK["Recheck and book atomically"]
+ BOOK --> RESULT["Confirmation or conflict"]
