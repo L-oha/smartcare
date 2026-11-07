@@ -156,7 +156,8 @@ def my_appointments(user: User = Depends(current_user), session: Session = Depen
 @app.post("/api/appointments")
 def book(body: AppointmentRequest, user: User = Depends(current_user), session: Session = Depends(get_session)):
     slot=session.get(Slot,body.slot_id)
-    if not slot or slot.is_booked: raise HTTPException(400,"That time is no longer available")
+    if not slot or slot.is_booked or slot.start_time <= datetime.now():
+        raise HTTPException(400, "That time is no longer available")
     slot.is_booked=True
     appt=Appointment(user_id=user.id,slot_id=slot.id,reason=body.reason,status="confirmed")
     session.add(slot);session.add(appt);session.commit();session.refresh(appt)
