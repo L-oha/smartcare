@@ -1,0 +1,12 @@
+services:
+  smartcare:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_SECRET=change-this-in-production
+      - DATABASE_URL=sqlite:////data/smartcare.db
+    volumes:
+      - smartcare_data:/data
+volumes:
+  smartcare_data:

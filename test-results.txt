@@ -1,0 +1,37 @@
+SmartCare Milestone 4 verification
+Base backend commit 3c3c671 plus restored frontend and Docker files.
+
+$ python -m pytest -q --disable-warnings
+.....................                                                    [100%]
+21 passed, 18 warnings in 0.26s
+
+$ python -m ruff check . (configured validation and tests scope)
+All checks passed!
+
+$ python -m mypy (configured validation module scope)
+Success: no issues found in 1 source file
+
+$ npm run build (includes TypeScript compiler)
+
+> smartcare-frontend@1.0.0 build
+> tsc && vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 15 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.34 kB │ gzip:  0.25 kB
+dist/assets/index-C_cDZ0pA.css    3.35 kB │ gzip:  1.29 kB
+dist/assets/index-CAvGp_lm.js   230.49 kB │ gzip: 71.53 kB
+
+✓ built in 139ms
+
+Docker Compose startup and the manual appointment workflow passed on November 14, 2026. See the results below.
+Local Uvicorn smoke check: homepage HTTP 200 and /api/health HTTP 200 with status ok.
+
+Docker smoke test — November 14, 2026
+- docker compose up --build -d built the image and started the SmartCare container.
+- GET http://127.0.0.1:8000/api/health returned {"status":"ok"}.
+- In Safari, I viewed provider availability, booked and cancelled an appointment, and verified that the same slot became available again.
+- Detailed manual results: docs/manual-tests-mvp.md 
