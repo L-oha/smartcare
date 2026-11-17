@@ -1,0 +1,4 @@
+flowchart LR
+    Patient["Patient in browser"] -->|HTTP port 8000| App["SmartCare container: FastAPI serves React and JSON API"]
+    App -->|SQLModel| DB[("SQLite in smartcare_data volume")]
+    App -. optional HTTPS .-> AI["OpenAI Responses API"]

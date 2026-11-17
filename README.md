@@ -1,6 +1,24 @@
 # smartcare
 SmartCare healthcare appointment scheduling system — COMP 425
 
+Project author: Franck Ohachosim.
+
+## Run SmartCare with Docker
+
+From the repository root, copy the example configuration and set a local signing secret in .env.
+
+```sh
+cp .env.example .env
+docker compose up --build
+```
+
+Open http://127.0.0.1:8000. To stop the app, press Ctrl+C or run
+`docker compose down`. The named volume preserves the SQLite database.
+
+`frontend/` contains the React app, `backend/app/` contains the FastAPI
+service, `backend/tests/` contains the automated tests, and `docs/` contains
+the design diagrams and manual checklist.
+
 ## How to run the tests
 
 From the repository root, use Python 3.12:

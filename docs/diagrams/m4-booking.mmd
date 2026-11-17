@@ -1,0 +1,17 @@
+sequenceDiagram
+    actor P as Patient
+    participant UI as React UI
+    participant API as FastAPI
+    participant DB as SQLite
+    P->>UI: Select an available slot and confirm
+    UI->>API: POST /api/appointments with token and slot ID
+    API->>DB: Load selected slot
+    DB-->>API: Slot state and start time
+    alt Future slot is available
+        API->>DB: Commit confirmed appointment and booked slot
+        API-->>UI: Confirmed appointment
+        UI-->>P: Show confirmation
+    else Slot missing, booked, or past
+        API-->>UI: HTTP 400 with availability message
+        UI-->>P: Show error
+    end
